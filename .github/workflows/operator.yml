@@ -186,11 +186,7 @@ jobs:
 
   build-operator:
     name: Build-operator
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-24.04]
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout source
@@ -522,7 +518,6 @@ jobs:
     with:
       artifact-name: volsync-operator
       image-name: ghcr.io/sonroyaalmerol/volsync
-      multiarch: true
     secrets:
       registry-username: ${{ github.repository_owner }}
       registry-password: ${{ secrets.GITHUB_TOKEN }}
