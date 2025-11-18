@@ -114,7 +114,7 @@ RUN go build -a -o diskrsync-tcp/diskrsync-tcp -ldflags "-X=main.volsyncVersion=
 # Acquire Proxmox Backup Client binary
 FROM debian:trixie AS pbs-client-builder
 
-RUN wget https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg -O /usr/share/keyrings/proxmox-archive-keyring.gpg
+RUN apt update -y && apt install wget -y && wget https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg -O /usr/share/keyrings/proxmox-archive-keyring.gpg
 COPY mover-proxmoxbackup/pbs-client.sources /etc/apt/sources.list.d/pbs-client.sources
 
 RUN apt update -y && apt install proxmox-backup-client-static -y
