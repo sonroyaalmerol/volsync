@@ -529,7 +529,7 @@ jobs:
 
   push-scorecard:
     name: Push custom scorecard container to registry
-    needs: push-gate
+    needs: build-scorecard
     uses: ./.github/workflows/registry-push.yml
     with:
       artifact-name: volsync-custom-scorecard-tests-container
