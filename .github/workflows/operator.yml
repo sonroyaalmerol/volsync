@@ -207,7 +207,7 @@ jobs:
       - name: Save container as artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: volsync-operator-${{ env.ARCH }}
+          name: volsync-operator
           path: /tmp/image.tar
 
   build-scorecard:
