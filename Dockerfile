@@ -111,6 +111,15 @@ ARG version_arg="(unknown)"
 RUN go build -a -o diskrsync-tcp/diskrsync-tcp -ldflags "-X=main.volsyncVersion=${version_arg}" diskrsync-tcp/main.go
 
 ######################################################################
+# Acquire Proxmox Backup Client binary
+FROM trixie AS pbs-client-builder
+
+RUN wget https://enterprise.proxmox.com/debian/proxmox-archive-keyring-trixie.gpg -O /usr/share/keyrings/proxmox-archive-keyring.gpg
+COPY mover-proxmoxbackup/pbs-client.sources /etc/apt/sources.list.d/pbs-client.sources
+
+RUN apt update -y && apt install proxmox-backup-client-static -y
+
+######################################################################
 # Final container
 FROM registry.access.redhat.com/ubi9-minimal
 WORKDIR /
@@ -140,6 +149,12 @@ COPY --from=rclone-builder /workspace/rclone/rclone /usr/local/bin/rclone
 COPY /mover-rclone/active.sh \
      /mover-rclone/
 RUN chmod a+rx /mover-rclone/*.sh
+
+##### proxmox-backup-client
+COPY --from=pbs-client-builder /usr/bin/proxmox-backup-client /usr/local/bin/proxmox-backup-client
+COPY /mover-proxmoxbackup/active.sh \
+     /mover-proxmoxbackup/
+RUN chmod a+rx /mover-proxmoxbackup/*.sh
 
 ##### restic
 COPY --from=restic-builder /workspace/restic/restic /usr/local/bin/restic

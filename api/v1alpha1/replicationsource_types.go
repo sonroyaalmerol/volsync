@@ -244,6 +244,60 @@ type ReplicationSourceSyncthingSpec struct {
 	MoverConfig `json:",inline"`
 }
 
+// define the ProxmoxBackup field
+type ReplicationSourceProxmoxBackupSpec struct {
+	// ReplicationSourceVolumeOptions are common options for how to handle the source volume.
+	// +optional
+	ReplicationSourceVolumeOptions `json:",inline"`
+
+	// ProxmoxBackupRepository is the full address of the Proxmox Backup Server repository,
+	// e.g., "user@realm@server:port:datastore".
+	// This value will be passed to the mover container via the PBS_REPOSITORY environment variable.
+	// +kubebuilder:validation:MinLength=1
+	ProxmoxBackupRepository *string `json:"proxmoxBackupRepository"`
+
+	// ProxmoxBackupIDSuffix is a prefix used to generate the Proxmox Backup ID for snapshots.
+	// The full backup ID will be constructed using this prefix, the hostname of the pod,
+	// and a sanitized version of the destination path (from `RCLONE_DEST_PATH` in the rclone context).
+	// This value will be passed to the mover container via the PBS_BACKUP_ID_PREFIX environment variable.
+	// +kubebuilder:validation:MinLength=1
+	ProxmoxBackupIDSuffix *string `json:"proxmoxBackupIDSuffix"`
+
+	// ProxmoxBackupSecret is the name of the Kubernetes Secret that contains
+	// credentials for connecting to the Proxmox Backup Server.
+	// This secret should contain keys like `PBS_USERNAME`, `PBS_PASSWORD`,
+	// `PBS_ENCRYPTION_PASSWORD`, and `PBS_FINGERPRINT`.
+	// +kubebuilder:validation:MinLength=1
+	ProxmoxBackupSecret *string `json:"proxmoxBackupSecret"`
+
+	// ProxmoxBackupNamespace is an optional namespace within the datastore on the
+	// Proxmox Backup Server to organize backups. If not specified, "default" is used.
+	// This value will be passed to the mover container via the PBS_NAMESPACE environment variable.
+	// +optional
+	ProxmoxBackupNamespace *string `json:"proxmoxBackupNamespace,omitempty"`
+
+	// CustomCA allows for providing a custom CA certificate to be used when
+	// connecting to the Proxmox Backup Server, if it uses a TLS certificate
+	// signed by a custom or private CA.
+	// +optional
+	CustomCA CustomCASpec `json:"customCA,omitempty"`
+
+	// MoverConfig contains configuration options for the mover Job's podSpec.
+	// This includes security context, pod labels, and resource requirements.
+	// +optional
+	MoverConfig MoverConfig `json:"moverConfig,omitempty"`
+
+	// MoverServiceAccount specifies an optional service account name to be used for the mover Job.
+	// If not specified, a service account will be automatically generated.
+	// +optional
+	MoverServiceAccount *string `json:"moverServiceAccount,omitempty"`
+
+	// MoverVolumes allows specifying additional volumes and volume mounts to be attached
+	// to the mover pod. This can be used for custom configurations or tools needed by the mover.
+	// +optional
+	MoverVolumes []MoverVolume `json:"moverVolumes,omitempty"`
+}
+
 // ReplicationSourceSpec defines the desired state of ReplicationSource
 type ReplicationSourceSpec struct {
 	// sourcePVC is the name of the PersistentVolumeClaim (PVC) to replicate.
@@ -267,6 +321,9 @@ type ReplicationSourceSpec struct {
 	// syncthing defines the configuration when using Syncthing-based replication.
 	//+optional
 	Syncthing *ReplicationSourceSyncthingSpec `json:"syncthing,omitempty"`
+	// proxmoxbackup defines the configuration when using Syncthing-based replication.
+	//+optional
+	ProxmoxBackup *ReplicationSourceProxmoxBackupSpec `json:"proxmoxbackup,omitempty"`
 	// external defines the configuration when using an external replication
 	// provider.
 	//+optional
