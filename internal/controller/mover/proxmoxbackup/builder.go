@@ -37,7 +37,7 @@ import (
 const (
 	pbsMoverName = "proxmox-backup" // Renamed from rcloneMoverName
 	// defaultPBSContainerImage is the default container image for the proxmox-backup data mover
-	defaultPBSContainerImage = "quay.io/backube/volsync:latest" // Renamed from defaultRcloneContainerImage
+	defaultPBSContainerImage = "ghcr.io/sonroyaalmerol/volsync:latest" // Renamed from defaultRcloneContainerImage
 	// Command line flag will be checked first
 	// If command line flag not set, the RELATED_IMAGE_ env var will be used
 	pbsContainerImageFlag   = "proxmox-backup-container-image"      // Renamed from rcloneContainerImageFlag

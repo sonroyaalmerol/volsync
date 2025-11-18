@@ -26,7 +26,8 @@ import (
 // proxmoxbackupRegex identifies common log lines indicative of progress or success
 // for proxmox-backup-client operations (backup and restore), based on observed log formats.
 var proxmoxbackupRegex = regexp.MustCompile(
-	`^\s*(?:[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:[+-][0-9]{2}:[0-9]{2})?:(?: pbs-plus: \[info\]:)?\s*)?` + // Optional timestamp and 'pbs-plus: [info]:' prefix
+	`^\s*(?:[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}` +
+		`(?:[+-][0-9]{2}:[0-9]{2})?:(?: pbs-plus: \[info\]:)?\s*)?` + // Optional timestamp and 'pbs-plus: [info]:' prefix
 		`([sS]tarting (backup|restore):)|` + // e.g., "Starting backup: host/AD-D001/2025-11-18T16:31:03Z"
 		`([cC]lient name:)|` + // e.g., "Client name: phoenix-pbs"
 		`([sS]tarting backup protocol:)|` + // e.g., "Starting backup protocol: Tue Nov 18 11:31:03 2025"
@@ -39,8 +40,11 @@ var proxmoxbackupRegex = regexp.MustCompile(
 		`(\s*-\s*\d+ unchanged, reusable files with .+ data)|` + // Summary detail
 		`(\s*-\s*\d+ changed or non-reusable files with .+ data)|` + // Summary detail
 		`(\s*-\s*\d+\.\d+ (?:MiB|GiB) padding in \d+ partially reused chunks)|` + // Summary detail
-		`(.+?: reused \d+\.\d+ (?:MiB|GiB) from previous snapshot for unchanged files \(\d+ chunks\))|` + // Archive reuse info
-		`(.+?: had to backup \d+\.\d+ (?:MiB|GiB) of \d+\.\d+ (?:MiB|GiB) \(compressed \d+\.\d+ (?:MiB|GiB|KiB)\) in \d+\.\d+ s \(average \d+\.\d+ (?:MiB|KiB)\/s\))|` + // Archive backup stats
+		`(.+?: reused \d+\.\d+ (?:MiB|GiB) from previous snapshot for unchanged files ` +
+		`\(\d+ chunks\))|` + // Archive reuse info
+		`(.+?: had to backup \d+\.\d+ (?:MiB|GiB) of \d+\.\d+ (?:MiB|GiB) ` +
+		`\(compressed \d+\.\d+ (?:MiB|GiB|KiB)\) in \d+\.\d+ s ` +
+		`\(average \d+\.\d+ (?:MiB|KiB)\/s\))|` + // Archive backup stats
 		`(.+?: backup was done incrementally, reused \d+\.\d+ (?:MiB|GiB) \(\d+\.\d+%\))|` + // Archive incremental info
 		`(Uploaded \d+ chunks in \d+ seconds)|` + // General chunk upload (if it appears)
 		`(restored \d+ bytes, \d+ files)|` + // Restore-specific: e.g., "restored 12345 bytes, 12 files"
