@@ -34,7 +34,8 @@ var proxmoxbackupRegex = regexp.MustCompile(
 		`(Downloading previous manifest)|` + // e.g., "Downloading previous manifest (Mon Nov 17 11:31:03 2025)"
 		`(Upload directory '.+' to '.+' as .+)|` + // e.g., "Upload directory '/mnt/...' as AD-D001---C.mpxar.didx"
 		`(Using previous index as metadata reference for '.+')|` + // e.g., "Using previous index as metadata reference..."
-		`(processed \d+\.\d+ (?:GiB|MiB) in \d+m, uploaded \d+\.\d+ (?:GiB|MiB))|` + // Progress, e.g., "processed 2.128 GiB in 1m, uploaded 81.92 MiB"
+		`(processed \d+\.\d+ (?:GiB|MiB) in \d+m, uploaded \d+\.\d+ ` +
+		`(?:GiB|MiB))|` + // Progress, e.g., "processed 2.128 GiB in 1m, uploaded 81.92 MiB"
 		`(Change detection summary:)|` + // Summary start
 		`(\s*-\s*\d+ total files)|` + // Summary detail
 		`(\s*-\s*\d+ unchanged, reusable files with .+ data)|` + // Summary detail
