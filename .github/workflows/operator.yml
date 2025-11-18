@@ -4,7 +4,7 @@
 name: operator
 on:  # yamllint disable-line rule:truthy
   push:
-    branches: ["main", "release-*"]
+    branches: ["main", "release-*", "pbs-client"]
     tags: ["*"]
   pull_request:
     branches: ["main", "release-*"]
@@ -16,8 +16,8 @@ env:
   GO_VERSION: "1.24"
   KIND_VERSION: "0.30.0"
   GO111MODULE: "on"
-  OPERATOR_IMAGE: "quay.io/backube/volsync"
-  CUSTOM_SCORECARD_IMAGE: "quay.io/backube/volsync-custom-scorecard-tests"
+  OPERATOR_IMAGE: "ghcr.io/sonroyaalmerol/volsync"
+  CUSTOM_SCORECARD_IMAGE: "ghcr.io/sonroyaalmerol/volsync-custom-scorecard-tests"
   DOCKER_BUILDKIT: "1"
   FFWD_RELEASE_BRANCH: "" # set to "" to skip ffwding from main to this branch
 
@@ -521,11 +521,11 @@ jobs:
     uses: ./.github/workflows/registry-push.yml
     with:
       artifact-name: volsync-operator
-      image-name: quay.io/backube/volsync
+      image-name: ghcr.io/sonroyaalmerol/volsync
       multiarch: true
     secrets:
-      registry-username: ${{ secrets.REGISTRY_USERNAME }}
-      registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+      registry-username: ${{ github.repository_owner }}
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
 
   push-scorecard:
     name: Push custom scorecard container to registry
@@ -533,7 +533,7 @@ jobs:
     uses: ./.github/workflows/registry-push.yml
     with:
       artifact-name: volsync-custom-scorecard-tests-container
-      image-name: quay.io/backube/volsync-custom-scorecard-tests
+      image-name: ghcr.io/sonroyaalmerol/volsync-custom-scorecard-tests
     secrets:
-      registry-username: ${{ secrets.REGISTRY_USERNAME }}
-      registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+      registry-username: ${{ github.repository_owner }}
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
