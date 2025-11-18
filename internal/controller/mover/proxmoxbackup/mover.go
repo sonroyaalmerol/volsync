@@ -50,7 +50,6 @@ const (
 	pbsNamespace            = "PBS_NAMESPACE"           // Environment variable for PBS namespace
 	pbsDefaultNamespace     = "default"                 // Default namespace for PBS backups
 	pbsRepositoryEnvVar     = "PBS_REPOSITORY"          // Environment variable for PBS_REPOSITORY
-	pbsUsernameEnvVar       = "PBS_USERNAME"            // Environment variable for PBS_USERNAME
 	pbsPasswordEnvVar       = "PBS_PASSWORD"            // Environment variable for PBS_PASSWORD
 	pbsEncryptionEnvVar     = "PBS_ENCRYPTION_PASSWORD" // Environment variable for PBS_ENCRYPTION_PASSWORD
 	pbsFingerprintEnvVar    = "PBS_FINGERPRINT"         // Environment variable for PBS_FINGERPRINT
@@ -273,7 +272,6 @@ func (m *Mover) ensureJob(ctx context.Context, dataPVC *corev1.PersistentVolumeC
 		// So we map the secret keys to these env vars.
 		pbsEnvVars := []struct{ secretKey, envVarName string }{
 			{"PBS_REPOSITORY", pbsRepositoryEnvVar},
-			{"PBS_USERNAME", pbsUsernameEnvVar},
 			{"PBS_PASSWORD", pbsPasswordEnvVar},
 			{"PBS_ENCRYPTION_PASSWORD", pbsEncryptionEnvVar},
 			{"PBS_FINGERPRINT", pbsFingerprintEnvVar},
@@ -472,8 +470,7 @@ func (m *Mover) validatePBSSecret(ctx context.Context) (*corev1.Secret, error) {
 	}
 	logger := m.logger.WithValues("Proxmox Backup Secret", client.ObjectKeyFromObject(secret))
 
-	// Validate essential fields for PBS connection (these are just examples, adjust as needed)
-	requiredKeys := []string{pbsRepositoryEnvVar, pbsUsernameEnvVar, pbsPasswordEnvVar}
+	requiredKeys := []string{pbsPasswordEnvVar}
 
 	if err := utils.GetAndValidateSecret(ctx, m.client, logger, secret, requiredKeys...); err != nil {
 		logger.Error(err, "Proxmox Backup secret does not contain the proper fields")
